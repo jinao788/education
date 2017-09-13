@@ -1,0 +1,28 @@
+<!--_meta 作为公共模版分离出去-->
+{include file="public/meta" /}
+<!--/meta 作为公共模版分离出去-->
+{block name="seo"}
+seo
+{/block}
+
+<!--_header 作为公共模版分离出去-->
+{block name="header"}
+{include file="public/header" /}
+<!--/_header 作为公共模版分离出去-->
+{/block}
+<!--_menu 作为公共模版分离出去-->
+{block name="menu"}
+{include file="public/menu" /}
+<!--/_menu 作为公共模版分离出去-->
+{/block}
+{block name="content"}
+content
+{/block}	
+<!--_footer 作为公共模版分离出去-->
+{include file="public/footer" /}
+<!--/_footer /作为公共模版分离出去-->
+{block name="js"}
+js
+{/block}
+</body>
+</html>

@@ -1,0 +1,170 @@
+{extend name='public/base'/}
+{block name='header'}{/block} {//关掉头部}
+{block name='menu'}{/block} {//关掉菜单}
+{block name='seo'}
+<title>{$title|default="标题"}</title>
+<meta name="keywords" content="{$keywords|default='关键字'}">
+<meta name="description" content="{$desc|default='描述'}">
+{/block}
+
+{block name='content'}
+<article class="cl pd-20">
+
+
+    <form action="" method="post" class="form form-horizontal" id="form-admin-add">
+        <div class="row cl">
+            <label class="form-label col-xs-4 col-sm-3"><span class="c-red">*</span>要恢复的用户ID：</label>
+            <div class="formControls col-xs-5 col-sm-6">
+                <input   type="text" class="input-text" value="" placeholder="" require="" id="id" name="id">
+            </div>
+        </div>
+
+        <div class="row cl">
+            <div class="col-xs-8 col-sm-9 col-xs-offset-4 col-sm-offset-3">
+                <input class="btn btn-primary radius disabled" type="button" value="&nbsp;&nbsp;提交&nbsp;&nbsp;" id="submit" >
+            </div>
+        </div>
+       
+    </form>
+
+
+</article>
+{/block}
+
+{block name='js'}
+<!--请在下方写此页面业务相关的脚本-->
+<script type="text/javascript" src="__STATIC__/lib/jquery.validation/1.14.0/jquery.validate.js"></script>
+<script type="text/javascript" src="__STATIC__/lib/jquery.validation/1.14.0/validate-methods.js"></script>
+<script type="text/javascript" src="__STATIC__/lib/jquery.validation/1.14.0/messages_zh.js"></script>
+
+
+<!-- <script type="text/javascript">
+$(function(){
+    $('.skin-minimal input').iCheck({
+        checkboxClass: 'icheckbox-blue',
+        radioClass: 'iradio-blue',
+        increaseArea: '20%'
+    });
+    
+    $("#form-admin-add").validate({
+        rules:{
+            adminName:{
+                required:true,
+                minlength:4,
+                maxlength:16
+            },
+            password:{
+                required:true,
+            },
+            password2:{
+                required:true,
+                equalTo: "#password"
+            },
+            
+           
+            email:{
+                required:true,
+                email:true,
+            },
+            adminRole:{
+                required:true,
+            },
+        },
+        onkeyup:false,
+        focusCleanup:true,
+        success:"valid",
+        submitHandler:function(form){
+            $(form).ajaxSubmit({
+                type: 'post',
+                url: "{:url('user/addUser')}" ,
+                success: function(data){
+                    layer.msg('添加成功!',{icon:1,time:1000});
+                },
+                error: function(XmlHttpRequest, textStatus, errorThrown){
+                    layer.msg('error!',{icon:1,time:1000});
+                }
+            });
+            var index = parent.layer.getFrameIndex(window.name);
+            parent.$('.btn-refresh').click();
+            parent.layer.close(index);
+        }
+    });
+});
+</script>  -->
+
+<script>
+
+    $(function(){
+
+        //防止用户无更新提交,只有表中数据有变化时才允许提交
+        $("form").children().change(function(){
+            $("#submit").removeClass('disabled');
+        });
+
+        // //失去焦点时,检查用户名是否重复
+        // $("#id").blur(function(){
+        //     $.ajax({
+        //         type: 'POST',
+        //         url: "adminReback",
+        //         data:{id:$(this).val()},
+        //         dataType: 'json',
+        //         success: function(data){
+        //             if (data.status == 1) {
+        //                alert('');
+        //             } else {
+        //                 alert(data.message);
+        //             }
+        //         }
+        //     });
+        // });
+
+        // //失去焦点时,检查邮箱是否重复
+        // $("#email").blur(function(){
+        //     $.ajax({
+        //         type: 'GET',
+        //         url: "checkUserEmail",
+        //         data:{email:$(this).val()},
+        //         dataType: 'json',
+        //         success: function(data){
+        //             if (data.status == 1) {
+        //                 alert(data.message);
+        //             } else {
+        //                 alert(data.message);
+        //             }
+        //         }
+        //     });
+        // });
+
+        $("#submit").on("click", function(event){
+            $.ajax({
+                type: "POST",
+                url: "{:url('user/adminReback')}",
+                data: $("#form-admin-add").serialize(),
+                dataType: "json",
+                success: function(data){
+                    if (data.status == 1) {
+                       layer.alert(data.message,{icon:6},function(){
+                                        //三个参数,消息,样式,回调点击关闭事件
+                                        var index = parent.layer.getFrameIndex(window.name);
+                                        parent.layer.close(index);
+                                        });
+                                        //若未点击,自动消失  //还需要优化最后刷新整个页面
+                                        setTimeout(function () {
+                                           var index = parent.layer.getFrameIndex(window.name);
+                                           parent.layer.close(index);
+                                        },1000);
+
+                    } else {
+                        layer.alert(data.message,{icon:5});
+
+                    }
+                }
+            });
+
+        })
+    })
+</script>
+{/block}
+
+</body>
+</html>
